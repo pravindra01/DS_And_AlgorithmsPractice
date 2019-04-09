@@ -28,6 +28,6 @@ def formatIntArray(arr):
 
 if __name__ == "__main__":
     mynewArr = [1,2,3,4,5,6,7,8,9,10]
-    arr = formatIntArrat(mynewArr)
+    arr = formatIntArray(mynewArr)
     for item in arr:
         print item
