@@ -19,6 +19,12 @@ class LruCache:
     tail = None
 
     def __init__(self,maxSize):
+        """
+        Must initialize all items in class
+        """
+        self._dict = {}
+        self.totalItemsInCache = 0
+        self.maxCapacity = 0
         self.maxCapacity = maxSize
         self.head = DNode(None,None)
         self.tail = DNode(None,None)
@@ -30,17 +36,20 @@ class LruCache:
     def put(self,key,value):
         """
         adds a item to cache if not already present
-        it call get function that will take care of moving object to front of list if already present
+        it call _dict get function to find if already present
         """
-        item = self.get(key)
-        if(item == -1):
+        item = self._dict.get(key)
+        if(item == None):
             #add item to Cache
             item = DNode(key,value)
             self._addNode(item)
             self._dict[key]  = item
             self.totalItemsInCache += 1
             if self.totalItemsInCache > self.maxCapacity:
-                self._removeLRUItemFromCache()          
+                self._removeLRUItemFromCache() 
+        else:
+            item.value = value
+            self._moveToHead(item)
     
     def get(self,key):
         """
@@ -58,7 +67,7 @@ class LruCache:
         remove item from linked list and hash table
         """
         item = self._removeLastItemfromLList()
-        self._dict.pop(item.key)
+        del self._dict[item.key]
         self.totalItemsInCache -=1
     
     def _removeNode(self, node):
@@ -100,12 +109,32 @@ class LruCache:
 if __name__ == "__main__":
     """
     Simple tests to demonstrate LRU Cache
+    ["LRUCache","put","get","put","get","get"]
+[[1],[2,1],[2],[3,2],[2],[3]]
     """
-    cacheIns = LruCache(2)
-    cacheIns.put(5,5)
-    cacheIns.put(10,10)
-    cacheIns.put(20,20)
-    print cacheIns.get(10)
-    print cacheIns.get(5)
-    print cacheIns.get(4)
-    print cacheIns.get(20)
+    cacheIns = LruCache(1)
+    print "None"
+    cacheIns.put(2,1)
+    print "None"
+    print cacheIns.get(2)
+    cacheIns.put(3,2)
+    print "None"
+    print cacheIns.get(2)
+    print cacheIns.get(3)
+    # Your LRUCache object will be instantiated and called as such:
+    command = ["LRUCache","put","put","get","put","put","get"]
+    input = [[2],[2,1],[2,2],[2],[1,1],[4,1],[2]]
+    OUT= []
+    for ind,com in enumerate(command):
+        if com == "LRUCache":
+            print("INIT************************** ", input[ind][0])
+            A = LruCache(input[ind][0])
+            OUT.append(None)
+        elif com == "get":
+            print "GET ************************** " , input[ind][0]
+            OUT.append(A.get(input[ind][0]))
+        else:
+            print "PUT ************************** " , input[ind][0],input[ind][1]
+            A.put(input[ind][0],input[ind][1] )
+            OUT.append(None)
+    print (OUT)
